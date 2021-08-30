@@ -9,6 +9,6 @@
 #define DEF_H_
 
 #define APP_NAME "vc8145"
-#define VERSION "1.0.1"
+#define VERSION "1.1.1"
 
 #endif /* DEF_H_ */
