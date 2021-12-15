@@ -83,7 +83,8 @@ char* vc8145_read(bool show_mode, bool show_unit)
 
 	//clear input buffer and send command
 
-	tcflush(serial_fd, TCIFLUSH);
+	//tcflush(serial_fd, TCIFLUSH); //TCIOFLUSH
+	tcflush(serial_fd, TCIOFLUSH);
 	static const uint8_t cmd = CMD;
 	if (write(serial_fd, &cmd, sizeof(cmd)) != sizeof(cmd)) {
 		snprintf(vc8145_err_msg, sizeof(vc8145_err_msg), "Communication device write error");
@@ -92,7 +93,6 @@ char* vc8145_read(bool show_mode, bool show_unit)
 
 	//wait and receive answer
 
-	static uint8_t rcv_buff[ANSW_LEN];
 	struct timeval timeout = {
 			.tv_sec = 0,
 			.tv_usec = ANSW_TIMEOUT_US
@@ -119,6 +119,8 @@ char* vc8145_read(bool show_mode, bool show_unit)
 		snprintf(vc8145_err_msg, sizeof(vc8145_err_msg), "Unknown communication error");
 		return 0;
     }
+
+	static uint8_t rcv_buff[ANSW_LEN];
 	int rx_len = read(serial_fd, (void*)rcv_buff, ANSW_LEN);
 	if (rx_len != ANSW_LEN) {
 		snprintf(vc8145_err_msg, sizeof(vc8145_err_msg), "Communication device read error, rx_len=%i", rx_len);
